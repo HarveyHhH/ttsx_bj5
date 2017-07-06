@@ -1,23 +1,16 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-<head>
-	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-	<title>天天生鲜-用户中心</title>
-	<link rel="stylesheet" type="text/css" href="/static/css/reset.css">
-	<link rel="stylesheet" type="text/css" href="/static/css/main.css">
-</head>
-<body>
 {% extends 'base.html' %}
-{% block region1 %}
+{% block head %}
 {{block.super}}
+{% endblock %}
+{% block main %}
 
 	<div class="main_con clearfix">
 		<div class="left_menu_con clearfix">
 			<h3>用户中心</h3>
 			<ul>
-				<li><a href="user_center_info.html">· 个人信息</a></li>
-				<li><a href="user_center_order.html" class="active">· 全部订单</a></li>
-				<li><a href="user_center_site.html">· 收货地址</a></li>
+				<li><a href="/user/center_info/">· 个人信息</a></li>
+				<li><a href="/user/center_order/" class="active">· 全部订单</a></li>
+				<li><a href="/user/center_site/">· 收货地址</a></li>
 			</ul>
 		</div>
 		<div class="right_content clearfix">
@@ -93,7 +86,5 @@
 		</div>
 	</div>
 
-{% endblock region1 %}
+{% endblock main %}
 
-</body>
-</html>

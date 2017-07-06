@@ -7,7 +7,7 @@
 	<link rel="stylesheet" type="text/css" href="/static/css/main.css">
 	<script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
 	<script type="text/javascript" src="/static/js/register.js"></script>
-</head>
+
 <body>
 	<div class="register_con">
 		<div class="l_con fl">
@@ -19,10 +19,11 @@
 		<div class="r_con fr">
 			<div class="reg_title clearfix">
 				<h1>用户注册</h1>
-				<a href="#">登录</a>
+				<a href="/user/login/">登录</a>
 			</div>
 			<div class="reg_form clearfix">
-				<form>
+				<form action="/user/register_log/" method="post">
+                {% csrf_token %}
 				<ul>
 					<li>
 						<label>用户名:</label>
@@ -31,17 +32,17 @@
 					</li>					
 					<li>
 						<label>密码:</label>
-						<input type="password" name="pwd" id="pwd">
+						<input type="password" name="user_pwd" id="pwd">
 						<span class="error_tip">提示信息</span>
 					</li>
 					<li>
 						<label>确认密码:</label>
-						<input type="password" name="cpwd" id="cpwd">
+						<input type="password" name="user_cpwd" id="cpwd">
 						<span class="error_tip">提示信息</span>
 					</li>
 					<li>
 						<label>邮箱:</label>
-						<input type="text" name="email" id="email">
+						<input type="text" name="user_email" id="email">
 						<span class="error_tip">提示信息</span>
 					</li>
 					<li class="agreement">
@@ -68,11 +69,11 @@
 			<span>|</span>
 			<a href="#">招聘人才</a>
 			<span>|</span>
-			<a href="#">友情链接</a>		
+			<a href="#">友情链接</a>
 		</div>
 		<p>CopyRight © 2016 北京天天生鲜信息技术有限公司 All Rights Reserved</p>
 		<p>电话：010-****888    京ICP备*******8号</p>
 	</div>
-	
+
 </body>
 </html>

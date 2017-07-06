@@ -40,6 +40,14 @@ $(function(){
 
 	function check_user_name(){
 		var len = $('#user_name').val().length;
+		var username = $('#user_name').val();
+		$.get('/user/register_log/',{'username':username},function(data){
+			var len_result = data['data'];
+			if(len_result == 1){
+                $('#user_name').next().html('此用户名已被占用').show()
+                error_name = false;
+			}
+		})
 		if(len<5||len>20)
 		{
 			$('#user_name').next().html('请输入5-20个字符的用户名')
