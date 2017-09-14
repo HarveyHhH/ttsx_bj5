@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 """
 Django settings for dailyfresh project.
 
@@ -41,6 +42,8 @@ INSTALLED_APPS = (
     'cart',
     'goods',
     'order',
+    'tinymce',
+    'haystack',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -52,6 +55,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'user.middleware.PreviousMiddleware',
 )
 
 ROOT_URLCONF = 'dailyfresh.urls'
@@ -111,3 +115,20 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
+
+TINYMCE_DEFAULT_CONFIG = {
+    'theme': 'advanced',
+    'width': 600,
+    'height': 400,
+}
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_cn_backend.WhooshEngine',
+        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+    }
+}
+HAYSTACK_SINGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+#
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 3

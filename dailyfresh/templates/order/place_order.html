@@ -1,24 +1,35 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-<head>
-	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-	<title>天天生鲜-提交订单</title>
-	<link rel="stylesheet" type="text/css" href="/static/css/reset.css">
-	<link rel="stylesheet" type="text/css" href="/static/css/main.css">
-</head>
-<body>
 {% extends 'base.html' %}
-{% block region1 %}
+{% block head %}
 {{block.super}}
-	
+<script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
+
+<script>
+	$(function(){
+	    var total_all = 0;
+	    $('.goods_list_td').each(function(){
+	        var total = $(this).children('.col07');
+			var price = parseFloat($(this).children('.col05').text());
+			var count = parseInt($(this).children('.col06').text());
+			total.text((price*count).toFixed(2));
+			total_all += parseFloat((price*count).toFixed(2));
+		});
+	    $('.total_goods_count em').text($('.goods_list_td').length);
+		$('.total_goods_count b').text(total_all+'元');
+		$('.total_pay b').text((total_all+10)+'元');
+	});
+</script>
+
+{% endblock head %}
+{% block main %}
+
 	<h3 class="common_title">确认收货地址</h3>
 
 	<div class="common_list_con clearfix">
 		<dl>
 			<dt>寄送到：</dt>
-			<dd><input type="radio" name="" checked="">北京市 海淀区 东北旺西路8号中关村软件园 （李思 收） 182****7528</dd>
+			<dd><input type="radio" name="" checked="">{{user.uaddress}} ({{user.urecv}}收) {{user.uphone}}</dd>
 		</dl>
-		<a href="user_center_site.html" class="edit_site">编辑收货地址</a>
+		<a href="/user/center_site/" class="edit_site">编辑收货地址</a>
 
 	</div>
 	
@@ -46,24 +57,17 @@
 			<li class="col04">数量</li>
 			<li class="col05">小计</li>		
 		</ul>
+		{% for cart_info in cart_list %}
 		<ul class="goods_list_td clearfix">
-			<li class="col01">1</li>			
-			<li class="col02"><img src="/static/images/goods/goods012.jpg"></li>
-			<li class="col03">奇异果</li>
-			<li class="col04">500g</li>
-			<li class="col05">25.80元</li>
-			<li class="col06">1</li>
-			<li class="col07">25.80元</li>	
+			<li class="col01">{{forloop.counter}}</li>
+			<li class="col02"><img src="/static/{{cart_info.cgoods.gpic}}"></li>
+			<li class="col03">{{cart_info.cgoods.gtitle|truncatechars:15}}</li>
+			<li class="col04">{{cart_info.cgoods.gunit}}</li>
+			<li class="col05">{{cart_info.cgoods.gprice}}</li>
+			<li class="col06">{{cart_info.c_count}}</li>
+			<li class="col07">元</li>
 		</ul>
-		<ul class="goods_list_td clearfix">
-			<li class="col01">2</li>			
-			<li class="col02"><img src="/static/images/goods/goods003.jpg"></li>
-			<li class="col03">大兴大棚草莓</li>
-			<li class="col04">500g</li>
-			<li class="col05">16.80元</li>
-			<li class="col06">1</li>
-			<li class="col07">16.80元</li>	
-		</ul>
+		{% endfor %}
 	</div>
 
 	<h3 class="common_title">总金额结算</h3>
@@ -76,12 +80,16 @@
 		</div>
 	</div>
 
+<form action="/order/order_submit/" method="post">
+	{% csrf_token %}
 	<div class="order_submit clearfix">
-		<a href="javascript:;" id="order_btn">提交订单</a>
-	</div>	
+		<input type="hidden" name="c_ids" value="{{cart_ids}}">
+		<input type="submit" value="提交订单" id="order_btn">
+	</div>
+</form>
 
-{% endblock region1 %}
-{% block region3 %}
+{% endblock main %}
+{% block footer %}
 	<div class="popup_con">
 		<div class="popup">
 			<p>订单提交成功！</p>
@@ -105,6 +113,4 @@
 			});
 		});
 	</script>
-{% endblock region3 %}
-</body>
-</html>
+{% endblock footer %}

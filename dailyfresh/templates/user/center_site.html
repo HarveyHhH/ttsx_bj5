@@ -1,6 +1,29 @@
 {% extends 'base.html' %}
 {% block head %}
 {{block.super}}
+<script src="/static/js/jquery-1.12.4.min.js"></script>
+
+<script>
+	$(function(){
+	    $('.form_group').eq(3).find('input').blur(function(){
+	        var Val = $(this).val();
+	        if(isNaN(Val)){
+	            alert('请输入11位数字');
+			}else if(Val.length>11 || Val.length<11){
+	            alert('请输入11位数字');
+			}
+		});
+        $('.form_group').eq(2).find('input').blur(function(){
+            var Val = $(this).val();
+            if(isNaN(Val)){
+                alert('请输入6位数字');
+            }else if(Val.length>6 || Val.length<6){
+                alert('请输入6位数字');
+            }
+        })
+	});
+</script>
+
 {% endblock head %}
 {% block main %}
 
@@ -18,7 +41,7 @@
 				<div class="site_con">
 					<dl>
 						<dt>当前地址：</dt>
-						<dd>{{user.uaddress|default:'××××××××'}} （{{user.urecv|default:'×××'}} 收） {{user.uphone|default:182****7528}}</dd>
+						<dd>{{user.uaddress|default:'××××××××'}} （{{user.urecv|default:'×××'}} 收） {{user.uphone|default:'182****7528'}}</dd>
 					</dl>					
 				</div>
 				<h3 class="common_title2">编辑地址</h3>
@@ -35,7 +58,7 @@
 						</div>
 						<div class="form_group">
 							<label>邮编：</label>
-							<input type="text" name="ucode>
+							<input type="text" name="ucode">
 						</div>
 						<div class="form_group">
 							<label>手机：</label>

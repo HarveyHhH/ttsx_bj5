@@ -13,3 +13,5 @@ class UserInfo(models.Model):
     urecv = models.CharField(max_length=20, default='')
     ucode = models.CharField(max_length=6,default='')
 
+
+

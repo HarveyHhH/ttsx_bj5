@@ -1,12 +1,16 @@
 from django.shortcuts import render, redirect
 from .models import UserInfo
+from goods.models import GoodsInfo
 from hashlib import sha1
 from django.http import JsonResponse
+from . import user_decoration
+from order.models import OrderMain, OrderDetail
+from django.core.paginator import Paginator
 
 # Create your views here.
 
 
-# 返回注册页面j
+# 返回注册页面
 def register(request):
     return render(request,'user/register.html')
 
@@ -44,10 +48,8 @@ def login(request):
 def login_check(request):
     # 用模板语言变量将数据库中的信息传给页面
     name = request.POST.get('username')
-    request.session['h1']='hello'
     pwd = request.POST.get('pwd').encode()
     umemory = request.POST.get('memory',0)
-    print(umemory)
     # sha1加密
     s1 = sha1()
     s1.update(pwd)
@@ -57,8 +59,14 @@ def login_check(request):
         return render(request, 'user/login.html',{'data':1})
     else:
         if result[0].upwd == pwd:
-            response = redirect('/user/center_info/')
+            # 通过中间件，重新跳转至前一个页面，如果没有记录则跳转至首页
+            print(request.session.get('full_path'))
+            url_path = request.session.get('full_path','/user/center_info')
+            print(url_path)
+            response = redirect(url_path)
+
             request.session['uid'] = result[0].id
+            request.session['uname'] = result[0].uname
             if umemory == '1':
                 response.set_cookie('uname',name)
             else:
@@ -68,17 +76,39 @@ def login_check(request):
             return render(request, 'user/login.html',{'data':2})
 
 
+@user_decoration.log_status
 def center_info(request):
     user = UserInfo.objects.get(pk=request.session['uid'])
-    context = {'choice':0,'title':'天天生鲜-用户中心','user':user}
+    ids = request.COOKIES.get('ids','').split(',')
+    print(ids)
+    glist = []
+    for id in ids:
+        if id != '':
+            glist.append(GoodsInfo.objects.get(id=id))
+    context = {'choice':0,'title':'天天生鲜-用户中心','user':user,'glist':glist}
     return render(request, 'user/center_info.html',context)
 
 
+@user_decoration.log_status
 def center_order(request):
-    context = {'title':'天天生鲜-用户中心'}
+    # 获取数据库内所有的订单对象
+    main = OrderMain.objects.all()
+    # 获取分页对象
+    order_list = Paginator(main,2)
+    # 获取指定页面上信息列表
+    try:
+        pIndex = request.GET.get('pIndex')
+    except:
+        pIndex = 1
+    pages_display = order_list.page(int(pIndex))
+    pages_list = order_list.page_range
+    print(pages_list)
+    context = {'title':'天天生鲜-用户中心', 'order_list': pages_display, 'pages_list': pages_list,
+               'pIndex': int(pIndex)}
     return render(request, 'user/center_order.html', context)
 
 
+@user_decoration.log_status
 def center_site(request):
     user = UserInfo.objects.get(pk=request.session['uid'])
     if request.method == 'POST':
@@ -94,4 +124,10 @@ def center_site(request):
         user.uphone = uphone
         user.save()
     context = {'user': user}
-    return render(request, 'user/site.html', context)
+    return render(request, 'user/center_site.html', context)
+
+
+# 登出操作
+def logout(request):
+    request.session.flush()
+    return render(request,'user/login.html')
